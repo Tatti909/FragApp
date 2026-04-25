@@ -9,10 +9,10 @@ function FragranceImage({ fragrance }) {
     return <View style={[styles.image, styles.imagePlaceholder]} />;
   }
 
-  return <Image source={{ uri: fragrance.imageUrl }} style={styles.image} />;
+  return <Image source={{ uri: fragrance.imageUrl }} style={styles.image} resizeMode="contain" />;
 }
 
-function HomeSection({ title, data, navigation, metaKey }) {
+function HomeSection({ title, data, navigation }) {
   if (data.length === 0) {
     return null;
   }
@@ -39,7 +39,7 @@ function HomeSection({ title, data, navigation, metaKey }) {
               {item.brand}
             </Text>
             <Text variant="bodySmall" style={styles.mutedText}>
-              {metaKey === 'rating' ? `Rating: ${item.rating}` : `Year: ${item.year}`}
+              {item.rating ? `Rating: ${item.rating}` : item.year ? `Year: ${item.year}` : ''}
             </Text>
           </Card>
         )}
@@ -49,8 +49,12 @@ function HomeSection({ title, data, navigation, metaKey }) {
 }
 
 export default function HomeScreen({ navigation }) {
-  const [recentPicks, setRecentPicks] = useState([]);
-  const [topRated, setTopRated] = useState([]);
+  const [sections, setSections] = useState({
+    freshClean: [],
+    vanillaAmber: [],
+    topDesigner: [],
+    topNiche: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -61,11 +65,10 @@ export default function HomeScreen({ navigation }) {
       try {
         setLoading(true);
         setError('');
-        const sections = await getHomeFragranceSections();
+        const homeSections = await getHomeFragranceSections();
 
         if (!ignore) {
-          setRecentPicks(sections.recentPicks);
-          setTopRated(sections.topRated);
+          setSections(homeSections);
         }
       } catch (homeError) {
         if (!ignore) {
@@ -88,7 +91,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text variant="headlineSmall">Home</Text>
-      <Text style={styles.mutedText}>Discover fragrances from popular brands.</Text>
+      <Text style={styles.mutedText}>Discover fragrances by notes and brands.</Text>
 
       {loading ? <ActivityIndicator style={styles.loader} /> : null}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -96,16 +99,24 @@ export default function HomeScreen({ navigation }) {
       {!loading && !error ? (
         <>
           <HomeSection
-            title="Recent picks"
-            data={recentPicks}
+            title="Fresh & Clean"
+            data={sections.freshClean}
             navigation={navigation}
-            metaKey="year"
           />
           <HomeSection
-            title="Top rated"
-            data={topRated}
+            title="Vanilla & Amber"
+            data={sections.vanillaAmber}
             navigation={navigation}
-            metaKey="rating"
+          />
+          <HomeSection
+            title="Top Rated Designer"
+            data={sections.topDesigner}
+            navigation={navigation}
+          />
+          <HomeSection
+            title="Top Rated Niche"
+            data={sections.topNiche}
+            navigation={navigation}
           />
         </>
       ) : null}
@@ -124,18 +135,20 @@ const styles = StyleSheet.create({
   },
   horizontalList: {
     gap: 10,
+    paddingVertical: 6,
     paddingRight: 16,
   },
   card: {
-    width: 150,
+    width: 152,
+    minHeight: 230,
     padding: 10,
     gap: 6,
   },
   image: {
     width: '100%',
-    height: 120,
+    height: 126,
     borderRadius: 10,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: '#f8fafc',
   },
   imagePlaceholder: {
     borderWidth: 1,

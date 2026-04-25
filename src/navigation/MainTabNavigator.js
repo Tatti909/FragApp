@@ -31,6 +31,7 @@ export default function MainTabNavigator() {
         tabBarIcon: ({ color, size, focused }) => (
           <Ionicons name={getTabIcon(route.name, focused)} size={size} color={color} />
         ),
+        headerTitle: 'Frag-App',
         tabBarActiveTintColor: '#2e7d6e',
         tabBarInactiveTintColor: '#64748b',
       })}

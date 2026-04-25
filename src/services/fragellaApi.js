@@ -1,6 +1,7 @@
 const FRAGELLA_BASE_URL = 'https://api.fragella.com/api/v1';
 const FRAGELLA_API_KEY = process.env.EXPO_PUBLIC_FRAGELLA_API_KEY;
-const DISCOVER_SEARCHES = ['Dior', 'Chanel', 'Tom Ford', 'Guerlain', 'Yves Saint Laurent'];
+const DESIGNER_BRANDS = ['Dior', 'Chanel', 'Yves Saint Laurent'];
+const NICHE_BRANDS = ['Creed', 'Xerjoff', 'Maison Francis Kurkdjian'];
 
 function toTextArray(values) {
   if (!Array.isArray(values)) {
@@ -114,22 +115,62 @@ export async function searchFragrances(query) {
   return data.map(mapFragrance);
 }
 
-export async function getHomeFragranceSections() {
-  const results = await Promise.all(DISCOVER_SEARCHES.map((query) => searchFragrances(query)));
-  const fragrances = uniqueFragrances(results.flat());
+async function fetchFragrances(path) {
+  if (!FRAGELLA_API_KEY) {
+    throw new Error('API key is missing. Set EXPO_PUBLIC_FRAGELLA_API_KEY.');
+  }
 
-  const recentPicks = [...fragrances]
-    .filter((fragrance) => fragrance.year)
-    .sort((first, second) => toNumber(second.year) - toNumber(first.year))
-    .slice(0, 10);
+  const response = await fetch(`${FRAGELLA_BASE_URL}${path}`, {
+    headers: {
+      'x-api-key': FRAGELLA_API_KEY,
+    },
+  });
 
-  const topRated = [...fragrances]
+  if (response.status === 404) {
+    return [];
+  }
+
+  if (!response.ok) {
+    throw new Error('Fragrance request failed. Try again.');
+  }
+
+  const data = await response.json();
+  if (!Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map(mapFragrance);
+}
+
+async function getBrandFragrances(brandName) {
+  return fetchFragrances(`/brands/${encodeURIComponent(brandName)}?limit=30`);
+}
+
+async function getMatchedFragrances(params) {
+  return fetchFragrances(`/fragrances/match?${params}&limit=10`);
+}
+
+async function getTopRatedFromBrands(brandNames) {
+  const results = await Promise.all(brandNames.map(getBrandFragrances));
+
+  return uniqueFragrances(results.flat())
     .filter((fragrance) => fragrance.rating)
     .sort((first, second) => toNumber(second.rating) - toNumber(first.rating))
     .slice(0, 10);
+}
+
+export async function getHomeFragranceSections() {
+  const [freshClean, vanillaAmber, topDesigner, topNiche] = await Promise.all([
+    getMatchedFragrances('general=bergamot,citrus,musk'),
+    getMatchedFragrances('general=vanilla,amber'),
+    getTopRatedFromBrands(DESIGNER_BRANDS),
+    getTopRatedFromBrands(NICHE_BRANDS),
+  ]);
 
   return {
-    recentPicks,
-    topRated,
+    freshClean,
+    vanillaAmber,
+    topDesigner,
+    topNiche,
   };
 }
