@@ -1,5 +1,6 @@
 const FRAGELLA_BASE_URL = 'https://api.fragella.com/api/v1';
 const FRAGELLA_API_KEY = process.env.EXPO_PUBLIC_FRAGELLA_API_KEY;
+const DISCOVER_SEARCHES = ['Dior', 'Chanel', 'Tom Ford', 'Guerlain', 'Yves Saint Laurent'];
 
 function toTextArray(values) {
   if (!Array.isArray(values)) {
@@ -56,6 +57,35 @@ function mapFragrance(item, index) {
   };
 }
 
+function fragranceKey(fragrance) {
+  return `${fragrance.brand}-${fragrance.name}`.toLowerCase();
+}
+
+function uniqueFragrances(fragrances) {
+  const seenKeys = new Set();
+
+  return fragrances.filter((fragrance) => {
+    const key = fragranceKey(fragrance);
+
+    if (seenKeys.has(key)) {
+      return false;
+    }
+
+    seenKeys.add(key);
+    return true;
+  });
+}
+
+function toNumber(value) {
+  const number = Number(value);
+
+  if (Number.isNaN(number)) {
+    return 0;
+  }
+
+  return number;
+}
+
 export async function searchFragrances(query) {
   if (!FRAGELLA_API_KEY) {
     throw new Error('API key is missing. Set EXPO_PUBLIC_FRAGELLA_API_KEY.');
@@ -82,4 +112,24 @@ export async function searchFragrances(query) {
   }
 
   return data.map(mapFragrance);
+}
+
+export async function getHomeFragranceSections() {
+  const results = await Promise.all(DISCOVER_SEARCHES.map((query) => searchFragrances(query)));
+  const fragrances = uniqueFragrances(results.flat());
+
+  const recentPicks = [...fragrances]
+    .filter((fragrance) => fragrance.year)
+    .sort((first, second) => toNumber(second.year) - toNumber(first.year))
+    .slice(0, 10);
+
+  const topRated = [...fragrances]
+    .filter((fragrance) => fragrance.rating)
+    .sort((first, second) => toNumber(second.rating) - toNumber(first.rating))
+    .slice(0, 10);
+
+  return {
+    recentPicks,
+    topRated,
+  };
 }

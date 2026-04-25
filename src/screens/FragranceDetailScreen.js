@@ -1,5 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, Divider, Text } from 'react-native-paper';
+import { Button, Chip, Divider, Text } from 'react-native-paper';
+
+import {
+  addFragranceToList,
+  listenToAuth,
+  PROFILE_LISTS,
+} from '../services/profileService';
 
 function InfoRow({ label, value }) {
   return (
@@ -31,6 +38,31 @@ function ChipList({ title, values }) {
 
 export default function FragranceDetailScreen({ route }) {
   const fragrance = route.params?.fragrance ?? null;
+  const [user, setUser] = useState(null);
+  const [saveMessage, setSaveMessage] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    return listenToAuth(setUser);
+  }, []);
+
+  async function saveToList(listName) {
+    if (!user || !fragrance) {
+      setSaveMessage('Sign in to save fragrances.');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setSaveMessage('');
+      await addFragranceToList(user.uid, listName, fragrance);
+      setSaveMessage('Saved to profile.');
+    } catch (error) {
+      setSaveMessage(error.message);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (!fragrance) {
     return (
@@ -48,6 +80,27 @@ export default function FragranceDetailScreen({ route }) {
       <Text variant="titleMedium" style={styles.brandText}>
         {fragrance.brand}
       </Text>
+
+      <View style={styles.buttonRow}>
+        <Button
+          mode="contained-tonal"
+          loading={saving}
+          disabled={saving}
+          onPress={() => saveToList(PROFILE_LISTS.collection)}
+        >
+          Add to collection
+        </Button>
+        <Button
+          mode="contained-tonal"
+          loading={saving}
+          disabled={saving}
+          onPress={() => saveToList(PROFILE_LISTS.wishlist)}
+        >
+          Add to wishlist
+        </Button>
+      </View>
+
+      {saveMessage ? <Text style={styles.messageText}>{saveMessage}</Text> : null}
 
       <Divider />
 
@@ -89,6 +142,14 @@ const styles = StyleSheet.create({
   },
   brandText: {
     color: '#475569',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  messageText: {
+    color: '#64748b',
   },
   section: {
     gap: 8,
