@@ -1,23 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { MD3LightTheme, Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import RootNavigator from './src/navigation/RootNavigator';
+import { navigationTheme, paperTheme } from './src/theme';
 
 export default function App() {
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
+    <PaperProvider theme={paperTheme}>
+      <NavigationContainer theme={navigationTheme}>
         <RootNavigator />
       </NavigationContainer>
     </PaperProvider>
   );
 }
-
-const theme = {
-  ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    primary: '#2e7d6e',
-    secondary: '#7e5a3a',
-  },
-};

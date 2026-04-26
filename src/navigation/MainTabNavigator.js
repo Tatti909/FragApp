@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RecommendationsScreen from '../screens/RecommendationsScreen';
 import SearchScreen from '../screens/SearchScreen';
+import { colors } from '../theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -32,8 +33,18 @@ export default function MainTabNavigator() {
           <Ionicons name={getTabIcon(route.name, focused)} size={size} color={color} />
         ),
         headerTitle: 'Frag-App',
-        tabBarActiveTintColor: '#2e7d6e',
-        tabBarInactiveTintColor: '#64748b',
+        headerStyle: {
+          backgroundColor: colors.surface,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.muted,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+        },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />

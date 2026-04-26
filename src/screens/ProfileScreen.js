@@ -19,6 +19,7 @@ import {
   signIn,
   signOutProfile,
 } from '../services/profileService';
+import { errorFeedback, successFeedback } from '../services/hapticsService';
 
 export default function ProfileScreen() {
   const [user, setUser] = useState(null);
@@ -79,7 +80,9 @@ export default function ProfileScreen() {
       } else {
         await signIn(email.trim(), password);
       }
+      successFeedback();
     } catch (submitError) {
+      errorFeedback();
       setError(submitError.message);
     } finally {
       setLoading(false);
@@ -91,7 +94,9 @@ export default function ProfileScreen() {
       setLoading(true);
       setError('');
       await signOutProfile();
+      successFeedback();
     } catch (signOutError) {
+      errorFeedback();
       setError(signOutError.message);
     } finally {
       setLoading(false);
@@ -102,7 +107,9 @@ export default function ProfileScreen() {
     try {
       setError('');
       await removeFragranceFromList(user.uid, listName, fragranceId);
+      successFeedback();
     } catch (removeError) {
+      errorFeedback();
       setError(removeError.message);
     }
   }

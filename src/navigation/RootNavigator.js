@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import MainTabNavigator from './MainTabNavigator';
 import FragranceDetailScreen from '../screens/FragranceDetailScreen';
+import { colors } from '../theme';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,7 +13,16 @@ export default function RootNavigator() {
       <Stack.Screen
         name="FragranceDetail"
         component={FragranceDetailScreen}
-        options={{ title: 'Fragrance' }}
+        options={{
+          title: 'Fragrance',
+          headerStyle: {
+            backgroundColor: colors.surface,
+          },
+          headerTitleStyle: {
+            color: colors.text,
+          },
+          headerTintColor: colors.primary,
+        }}
       />
     </Stack.Navigator>
   );

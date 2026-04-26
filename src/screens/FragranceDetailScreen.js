@@ -7,6 +7,7 @@ import {
   listenToAuth,
   PROFILE_LISTS,
 } from '../services/profileService';
+import { errorFeedback, successFeedback } from '../services/hapticsService';
 
 function InfoRow({ label, value }) {
   return (
@@ -48,6 +49,7 @@ export default function FragranceDetailScreen({ route }) {
 
   async function saveToList(listName) {
     if (!user || !fragrance) {
+      errorFeedback();
       setSaveMessage('Sign in to save fragrances.');
       return;
     }
@@ -56,8 +58,10 @@ export default function FragranceDetailScreen({ route }) {
       setSaving(true);
       setSaveMessage('');
       await addFragranceToList(user.uid, listName, fragrance);
+      successFeedback();
       setSaveMessage('Saved to profile.');
     } catch (error) {
+      errorFeedback();
       setSaveMessage(error.message);
     } finally {
       setSaving(false);

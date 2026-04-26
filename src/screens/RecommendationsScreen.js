@@ -3,6 +3,7 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, IconButton, Searchbar, Text } from 'react-native-paper';
 
 import { searchFragrances } from '../services/fragellaApi';
+import { successFeedback } from '../services/hapticsService';
 
 const MAX_SELECTED = 3;
 
@@ -172,20 +173,20 @@ export default function RecommendationsScreen({ navigation }) {
   }, [selectedFragrances]);
 
   function addFragrance(fragrance) {
-    setSelectedFragrances((currentFragrances) => {
-      const alreadySelected = currentFragrances.some(
-        (item) => fragranceKey(item) === fragranceKey(fragrance)
-      );
+    const alreadySelected = selectedFragrances.some(
+      (item) => fragranceKey(item) === fragranceKey(fragrance)
+    );
 
-      if (currentFragrances.length >= MAX_SELECTED || alreadySelected) {
-        return currentFragrances;
-      }
+    if (selectedFragrances.length >= MAX_SELECTED || alreadySelected) {
+      return;
+    }
 
-      return [...currentFragrances, fragrance];
-    });
+    successFeedback();
+    setSelectedFragrances((currentFragrances) => [...currentFragrances, fragrance]);
   }
 
   function removeFragrance(fragrance) {
+    successFeedback();
     setSelectedFragrances((currentFragrances) =>
       currentFragrances.filter((item) => fragranceKey(item) !== fragranceKey(fragrance))
     );
