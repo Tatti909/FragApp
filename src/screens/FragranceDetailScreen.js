@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Image, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { Button, Chip, Divider, Text } from 'react-native-paper';
 
 import {
@@ -8,6 +8,7 @@ import {
   PROFILE_LISTS,
 } from '../services/profileService';
 import { errorFeedback, successFeedback } from '../services/hapticsService';
+import { scheduleWishlistReminder } from '../services/notificationService';
 
 function InfoRow({ label, value }) {
   return (
@@ -58,6 +59,9 @@ export default function FragranceDetailScreen({ route }) {
       setSaving(true);
       setSaveMessage('');
       await addFragranceToList(user.uid, listName, fragrance);
+      if (listName === PROFILE_LISTS.wishlist) {
+        void scheduleWishlistReminder(fragrance);
+      }
       successFeedback();
       setSaveMessage('Saved to profile.');
     } catch (error) {
@@ -66,6 +70,18 @@ export default function FragranceDetailScreen({ route }) {
     } finally {
       setSaving(false);
     }
+  }
+
+  async function shareFragrance() {
+    if (!fragrance) {
+      return;
+    }
+
+    const notes = fragrance.generalNotes?.slice(0, 5).join(', ');
+
+    await Share.share({
+      message: `${fragrance.name} by ${fragrance.brand}${notes ? `\nNotes: ${notes}` : ''}`,
+    });
   }
 
   if (!fragrance) {
@@ -101,6 +117,9 @@ export default function FragranceDetailScreen({ route }) {
           onPress={() => saveToList(PROFILE_LISTS.wishlist)}
         >
           Add to wishlist
+        </Button>
+        <Button mode="outlined" onPress={shareFragrance}>
+          Share
         </Button>
       </View>
 

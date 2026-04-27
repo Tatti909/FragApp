@@ -4,7 +4,7 @@ FragApp is a React Native application made for searching and dicovering new frag
 
 ## Features
 
-- Search scents based on their name of house
+- Search scents based on their name or house
 - Search for new scents based on fragrances you like
 - View fragrances info including
    - notes
@@ -15,6 +15,8 @@ FragApp is a React Native application made for searching and dicovering new frag
 - Create a profile to save fragrances to your lists which include
    - My collection
    - Wishlist
+- Share fragrances found with notes to other applications
+- Get notifications to remember test fragrances from your wishlist
 
 ## Technologies
 
@@ -23,6 +25,7 @@ FragApp is a React Native application made for searching and dicovering new frag
 - React Native Paper
 - React navigation
 - Expo Haptics
+- Expo Notifications
 - Firebase Firestore
 - Firebase Authentication
 - Fragella REST API
