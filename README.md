@@ -1,6 +1,6 @@
 ## FragApp
 
-FragApp is a React Native application made for searching and dicovering new fragrances.
+FragApp is a React Native application made for searching and discovering new fragrances.
 
 ## Features
 
@@ -15,8 +15,8 @@ FragApp is a React Native application made for searching and dicovering new frag
 - Create a profile to save fragrances to your lists which include
    - My collection
    - Wishlist
-- Share fragrances found with notes to other applications
-- Get notifications to remember test fragrances from your wishlist
+- Share found fragrances with notes to other applications
+- Get notifications remember to test fragrances from your wishlist
 
 ## Technologies
 
