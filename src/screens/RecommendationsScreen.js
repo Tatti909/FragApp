@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, IconButton, Searchbar, Text } from 'react-native-paper';
-
 import { searchFragrances } from '../services/fragellaApi';
 import { successFeedback } from '../services/hapticsService';
 

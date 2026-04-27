@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, Searchbar, Text } from 'react-native-paper';
-
 import { searchFragrances } from '../services/fragellaApi';
 
 export default function SearchScreen({ navigation }) {

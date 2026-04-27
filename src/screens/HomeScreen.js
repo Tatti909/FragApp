@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, Text } from 'react-native-paper';
-
 import { getHomeFragranceSections } from '../services/fragellaApi';
 
 function FragranceImage({ fragrance }) {

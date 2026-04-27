@@ -1,7 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-const WISHLIST_REMINDER_SECONDS = 10;
+// const WISHLIST_REMINDER_SECONDS = 10;
+const WISHLIS_REMINDER_SECONDS = 60 * 60 * 24;
 const WISHLIST_CHANNEL_ID = 'wishlist-reminders';
 
 Notifications.setNotificationHandler({

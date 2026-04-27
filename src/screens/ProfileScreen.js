@@ -1,24 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import {
-  ActivityIndicator,
-  Button,
-  Card,
-  Divider,
-  IconButton,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import { ActivityIndicator, Button, Card, Divider, IconButton, Text, TextInput } from 'react-native-paper';
 
-import {
-  createProfile,
-  listenToAuth,
-  listenToFragranceList,
-  PROFILE_LISTS,
-  removeFragranceFromList,
-  signIn,
-  signOutProfile,
-} from '../services/profileService';
+import { createProfile, listenToAuth, listenToFragranceList, PROFILE_LISTS, removeFragranceFromList, signIn, signOutProfile } from '../services/profileService';
 import { errorFeedback, successFeedback } from '../services/hapticsService';
 
 export default function ProfileScreen() {

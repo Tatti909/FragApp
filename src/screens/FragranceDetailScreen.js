@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Image, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { Button, Chip, Divider, Text } from 'react-native-paper';
-
-import {
-  addFragranceToList,
-  listenToAuth,
-  PROFILE_LISTS,
-} from '../services/profileService';
+import {addFragranceToList,listenToAuth,PROFILE_LISTS} from '../services/profileService';
 import { errorFeedback, successFeedback } from '../services/hapticsService';
 import { scheduleWishlistReminder } from '../services/notificationService';
 
